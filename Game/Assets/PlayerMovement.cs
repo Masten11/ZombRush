@@ -1,47 +1,52 @@
-using UnityEngine; // Detta säger till Unity att vi vill använda deras inbyggda verktyg
+using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Dessa variabler syns i Inspector-fönstret i Unity
-    public float speed = 10f;       // Hur snabbt vi springer framåt
-    public float jumpForce = 5f;    // Hur kraftfullt hoppet är
+    [Header("Inställningar")]
+    public float speed = 10f;
+    public float jumpForce = 5f;
+    public float laneDistance = 3f; // Hur brett det är mellan filerna
+    public float sideSpeed = 10f;   // Hur snabbt gubben glider åt sidan
 
-    // Dessa är interna variabler som scriptet använder för att hålla koll på saker
-    private Rigidbody rb;           // En referens till fysik-komponenten (Rigidbody)
-    private bool isGrounded;        // En "strömbrytare" (Ja/Nej) för att veta om vi står på marken
+    private Rigidbody rb;
+    private bool isGrounded;
+    private int currentLane = 1; // 0 = Vänster, 1 = Mitten, 2 = Höger
 
-    // Start körs en gång precis när man trycker på Play
     void Start() {
-        // Vi letar upp Rigidbody-komponenten på vår Cylinder och sparar den i variabeln 'rb'
         rb = GetComponent<Rigidbody>();
     }
 
-    // Update körs hela tiden, så snabbt datorn hinner (bra för knapptryck)
     void Update() {
-        // Om vi trycker ner Space-tangenten OCH är på marken...
+        // --- HOPP-LOGIK ---
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded) {
-            // ...skicka iväg oss uppåt med en impuls-kraft (som ett hopp!)
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            
-            // Nu är vi i luften, så vi sätter isGrounded till false (nej)
             isGrounded = false;
         }
+
+        // --- FILBYTE-LOGIK (Subway Surfer-stil) ---
+        if (Input.GetKeyDown(KeyCode.RightArrow)) {
+            if (currentLane < 2) currentLane++;
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+            if (currentLane > 0) currentLane--;
+        }
+
+        // Räkna ut målet: Var ska vi vara i X-led?
+        // (0-1)*3 = -3 (Vänster) | (1-1)*3 = 0 (Mitten) | (2-1)*3 = 3 (Höger)
+        float targetX = (currentLane - 1) * laneDistance;
+
+        // Här sker "svepet": Vi ändrar positionen mjukt mot targetX
+        Vector3 newPos = transform.position;
+        newPos.x = Mathf.Lerp(newPos.x, targetX, Time.deltaTime * sideSpeed);
+        transform.position = newPos;
     }
 
-    // FixedUpdate används för fysik-beräkningar (körs i jämn takt)
     void FixedUpdate() {
-        // Här tvingar vi cylinderns fart framåt (Z-axeln) att vara lika med vår 'speed'
-        // Vi behåller gubbens nuvarande fart i X och Y (så att hopp och fall fungerar)
+        // Konstant fart framåt
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, speed);
     }
 
-    // Denna körs automatiskt när cylindern krockar med något
     void OnCollisionEnter(Collision col) {
-        // Om det vi krockade med har etiketten (Tag) "Ground"...
-        if (col.gameObject.CompareTag("Ground")) {
-            // ...då vet vi att vi står på marken igen och får hoppa!
-            isGrounded = true;
-        }
+        if (col.gameObject.CompareTag("Ground")) isGrounded = true;
     }
-}
 }
