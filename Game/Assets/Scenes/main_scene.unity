@@ -190,8 +190,12 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 7416853764070697344, guid: af12331b921044f7dbd2b8a20c32a0b0, type: 3}
+      propertyPath: speed
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7416853764070697344, guid: af12331b921044f7dbd2b8a20c32a0b0, type: 3}
       propertyPath: jumpForce
-      value: 10
+      value: 26
       objectReference: {fileID: 0}
     - target: {fileID: 7416853764070697344, guid: af12331b921044f7dbd2b8a20c32a0b0, type: 3}
       propertyPath: laneDistance
