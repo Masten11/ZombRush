@@ -20,10 +20,11 @@ public class LevelManager : MonoBehaviour
         // Skapa de första vägarna så spelaren har mark att stå på direkt
         for (int i = 0; i < numberOfTiles; i++)
         {
-            if (i == 0)
-                SpawnTile(0); // Första biten är alltid index 0 
+            // CHANGE THIS LINE: Check if i is less than 2 (so 0 and 1)
+            if (i < 2) 
+                SpawnTile(0); // This spawns the default road for the first two tiles
             else
-                SpawnTile(Random.Range(0, roadPrefabs.Length));
+                SpawnTile(Random.Range(1, roadPrefabs.Length));
         }
     }
 
@@ -42,7 +43,7 @@ public class LevelManager : MonoBehaviour
     if (playerPos > threshold)
     {
         Debug.Log("SPAWNING NEW TILE!"); // This should appear if it works
-        SpawnTile(Random.Range(0, roadPrefabs.Length));
+        SpawnTile(Random.Range(1, roadPrefabs.Length));
         DeleteTile();
     }
     }
