@@ -166,7 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roadPrefabs:
   - {fileID: 1425522626871989975, guid: af43238e07a0a4106a4711197bc0ad75, type: 3}
-  - {fileID: 42339342742776835, guid: 11eaa8b96edd946859114f1a195e4d1e, type: 3}
+  - {fileID: 42339342742776835, guid: 6417434ef03194bc3ad8299ed12e7c8e, type: 3}
   - {fileID: 7605720665792159892, guid: 2df541d01b2a74759820b7a1b8e4a866, type: 3}
   - {fileID: 1326417632801637733, guid: ed16848d2b47f41e6a57797ca13a6c72, type: 3}
   playerTransform: {fileID: 820865573}
@@ -199,7 +199,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7416853764070697344, guid: af12331b921044f7dbd2b8a20c32a0b0, type: 3}
       propertyPath: laneDistance
-      value: 8.5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8286084694346051136, guid: af12331b921044f7dbd2b8a20c32a0b0, type: 3}
       propertyPath: m_LocalPosition.x

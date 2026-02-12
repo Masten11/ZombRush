@@ -7,12 +7,12 @@ public class PlayerMovement : MonoBehaviour
     [Header("Inställningar")]
     public float speed = 10f;
     public float jumpForce = 10f;
-    public float laneDistance = 8f; // Hur brett det är mellan filerna
+    public float laneDistance = 10f; // Hur brett det är mellan filerna
     public float sideSpeed = 15f;   // Hur snabbt gubben glider åt sidan
 
     [Header("Roll Inställningar")]
     public float rollDuration = 1.0f; // Hur länge rullningen pågår
-    public float rollHeight = 0.5f;   // Hur mycket vi krymper på höjden (0.5 = hälften)
+    public float rollHeight = 0.3f;   // Hur mycket vi krymper på höjden (0.5 = hälften)
     public float rollAngle = -90f;    // Hur många grader vi lutar bakåt
     public float rollForce = 15f;
 
