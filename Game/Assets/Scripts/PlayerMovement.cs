@@ -1,5 +1,6 @@
 using UnityEngine;
-using System.Collections; // <--- DENNA RAD SAKNADES!
+using System.Collections; 
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -93,7 +94,12 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, speed);
     }
 
-    void OnCollisionEnter(Collision col) {
+    void OnCollisionEnter(Collision col)
+    {
         if (col.gameObject.CompareTag("Ground")) isGrounded = true;
+        
+        if (col.gameObject.CompareTag("Obstacle")) {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 }
