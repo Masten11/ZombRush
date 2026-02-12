@@ -1,17 +1,18 @@
 using UnityEngine;
-using System.Collections; // <--- DENNA RAD SAKNADES!
+using System.Collections; 
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Inställningar")]
     public float speed = 10f;
     public float jumpForce = 10f;
-    public float laneDistance = 8f; // Hur brett det är mellan filerna
+    public float laneDistance = 10f; // Hur brett det är mellan filerna
     public float sideSpeed = 15f;   // Hur snabbt gubben glider åt sidan
 
     [Header("Roll Inställningar")]
     public float rollDuration = 1.0f; // Hur länge rullningen pågår
-    public float rollHeight = 0.5f;   // Hur mycket vi krymper på höjden (0.5 = hälften)
+    public float rollHeight = 0.1f;   // Hur mycket vi krymper på höjden (0.5 = hälften)
     public float rollAngle = -90f;    // Hur många grader vi lutar bakåt
     public float rollForce = 15f;
 
@@ -93,7 +94,12 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, speed);
     }
 
-    void OnCollisionEnter(Collision col) {
+    void OnCollisionEnter(Collision col)
+    {
         if (col.gameObject.CompareTag("Ground")) isGrounded = true;
+        
+        if (col.gameObject.CompareTag("Obstacle")) {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 }
