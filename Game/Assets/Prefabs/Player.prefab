@@ -165,7 +165,7 @@ MonoBehaviour:
   laneDistance: 10
   sideSpeed: 15
   rollDuration: 1
-  rollHeight: 0.5
+  rollHeight: 0.1
   rollAngle: -90
   rollForce: 15
 --- !u!136 &3248715941886875764

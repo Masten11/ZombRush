@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Roll Inställningar")]
     public float rollDuration = 1.0f; // Hur länge rullningen pågår
-    public float rollHeight = 0.3f;   // Hur mycket vi krymper på höjden (0.5 = hälften)
+    public float rollHeight = 0.1f;   // Hur mycket vi krymper på höjden (0.5 = hälften)
     public float rollAngle = -90f;    // Hur många grader vi lutar bakåt
     public float rollForce = 15f;
 
