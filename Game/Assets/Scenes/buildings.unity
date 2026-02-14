@@ -175,7 +175,7 @@ MonoBehaviour:
   - {fileID: 42339342742776835, guid: 6c93c3c1f305847eb8c2273d92e41d43, type: 3}
   playerTransform: {fileID: 820865573}
   tileLength: 30
-  numberOfTiles: 5
+  numberOfTiles: 6
   availableBuildings:
   - name: Pink
     prefab: {fileID: 8017222088497037148, guid: e0ad60e56e6614347a394f05ad95c06b, type: 3}
@@ -189,7 +189,7 @@ MonoBehaviour:
   - name: Shop
     prefab: {fileID: 1933872731764152341, guid: 9ea98cf861323fa4ebaa76aa2fa1e8ba, type: 3}
     width: 30
-  buildingOffset: 22
+  buildingOffset: 20
 --- !u!4 &820865573 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8286084694346051136, guid: af12331b921044f7dbd2b8a20c32a0b0, type: 3}
