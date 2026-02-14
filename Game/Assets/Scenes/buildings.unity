@@ -177,18 +177,22 @@ MonoBehaviour:
   tileLength: 30
   numberOfTiles: 6
   availableBuildings:
-  - name: Pink
-    prefab: {fileID: 8017222088497037148, guid: e0ad60e56e6614347a394f05ad95c06b, type: 3}
-    width: 15
   - name: Kiosk
     prefab: {fileID: 2716691990832002440, guid: f87a936f2f92fd543827777a716c6a2b, type: 3}
     width: 7.5
+    rotationOffset: 0
   - name: Busstop
     prefab: {fileID: 4770495244929917487, guid: ef5ee901fbe011945aedc898fd7dcb72, type: 3}
     width: 7.5
+    rotationOffset: 90
   - name: Shop
     prefab: {fileID: 1933872731764152341, guid: 9ea98cf861323fa4ebaa76aa2fa1e8ba, type: 3}
     width: 30
+    rotationOffset: 0
+  - name: Gasstation
+    prefab: {fileID: 2239634083302635949, guid: 624b5e255b575a644b7d8dbdce332b49, type: 3}
+    width: 30
+    rotationOffset: 90
   buildingOffset: 20
 --- !u!4 &820865573 stripped
 Transform:
