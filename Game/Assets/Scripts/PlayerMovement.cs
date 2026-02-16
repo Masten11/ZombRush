@@ -1,101 +1,98 @@
 using UnityEngine;
-using System.Collections; 
+using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Inställningar")]
     public float speed = 10f;
-    public float jumpForce = 10f;
-    public float laneDistance = 10f; // Hur brett det är mellan filerna
-    public float sideSpeed = 15f;   // Hur snabbt gubben glider åt sidan
+    public float jumpForce = 12f;
+    public float laneDistance = 3f; 
+    public float sideSpeed = 15f;
 
     [Header("Roll Inställningar")]
-    public float rollDuration = 1.0f; // Hur länge rullningen pågår
-    public float rollHeight = 0.1f;   // Hur mycket vi krymper på höjden (0.5 = hälften)
-    public float rollAngle = -90f;    // Hur många grader vi lutar bakåt
-    public float rollForce = 15f;
+    public float rollDuration = 1.0f;
+    public float rollHeightMultiplier = 0.5f; // Hur mycket av originalhöjden som sparas
 
     private Rigidbody rb;
+    private CapsuleCollider playerCollider;
+    private Animator anim; // Redo för framtida animationer
+
     private bool isGrounded;
     private bool isRolling = false;
-    private int currentLane = 1; // 0 = Vänster, 1 = Mitten, 2 = Höger
+    private int currentLane = 1;
 
-    // För att komma ihåg hur gubben såg ut innan rullningen
-    private Vector3 originalScale;
-    private Quaternion originalRotation;
+    // Sparar colliderns originalmått
+    private float originalHeight;
+    private Vector3 originalCenter;
 
     void Start() {
         rb = GetComponent<Rigidbody>();
+        playerCollider = GetComponent<CapsuleCollider>();
+        anim = GetComponent<Animator>(); // Se till att du har en Animator-komponent på gubben
 
-        // Spara originalstorlek och rotation så vi kan återställa dem sen
-        originalScale = transform.localScale;
-        originalRotation = transform.rotation;
+        // Spara originalstorleken på hitboxen
+        originalHeight = playerCollider.height;
+        originalCenter = playerCollider.center;
     }
 
     void Update() {
-        // Ser till att man är på marken och inte rullar
+        // Hopp
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isRolling) {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
+            // anim.SetTrigger("Jump"); // Här lägger du sen in hopp-animation
         }
 
-        // --- ROLL-LOGIK ---
+        // Roll / Crouch
         if (Input.GetKeyDown(KeyCode.DownArrow) && !isRolling) {
             StartCoroutine(PerformRoll());
         }
 
-        // --- FILBYTE-LOGIK 
-        if (Input.GetKeyDown(KeyCode.RightArrow)) {
-            if (currentLane < 2) currentLane++;
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-            if (currentLane > 0) currentLane--;
-        }
+        // Filbyte
+        if (Input.GetKeyDown(KeyCode.RightArrow) && currentLane < 2) currentLane++;
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && currentLane > 0) currentLane--;
 
-        // Räkna ut målet: Var ska vi vara i X-led?
-        // (0-1)*3 = -3 (Vänster) , (1-1)*3 = 0 (Mitten) , (2-1)*3 = 3 (Höger)
+        // Mjuk förflyttning i sidled
         float targetX = (currentLane - 1) * laneDistance;
-
-        // Här sker "svepet", Vi ändrar positionen mjukt mot targetX
         Vector3 newPos = transform.position;
         newPos.x = Mathf.Lerp(newPos.x, targetX, Time.deltaTime * sideSpeed);
         transform.position = newPos;
     }
 
-    // Denna funktion körs "vid sidan av" och kan pausa sig själv
     IEnumerator PerformRoll() {
         isRolling = true;
+        
+        // --- ANIMATION START ---
+        // anim.SetBool("isRolling", true); 
 
-        // 1. Krymp kroppen (halva höjden) => gör collidern mindre
-        transform.localScale = new Vector3(originalScale.x, originalScale.y * rollHeight, originalScale.z);
+        // 1. Justera Hitboxen istället för Scale
+        // Vi sänker höjden och flyttar ner center-punkten så att gubbens "botten" stannar kvar på marken
+        playerCollider.height = originalHeight * rollHeightMultiplier;
+        playerCollider.center = new Vector3(originalCenter.x, originalCenter.y / 2f, originalCenter.z);
 
-        // 2. Luta kroppen bakåt (rotera runt X-axeln)
-        // Vi använder Rotate för att lägga till rotationen
-        transform.Rotate(rollAngle, 0, 0);
-
-        // Om du vill att han ska falla snabbt
         if (!isGrounded) {
-            rb.AddForce(Vector3.down * rollForce, ForceMode.Impulse);
+            rb.AddForce(Vector3.down * 10f, ForceMode.Impulse);
         }
 
-        // 3. Vänta i viss antal sekunder
         yield return new WaitForSeconds(rollDuration);
 
-        // 4. Återställ allt till det normala
-        transform.localScale = originalScale;
-        transform.rotation = originalRotation;
+        // 2. Återställ Hitboxen
+        playerCollider.height = originalHeight;
+        playerCollider.center = originalCenter;
+
+        // --- ANIMATION SLUT ---
+        // anim.SetBool("isRolling", false);
 
         isRolling = false;
     }
 
     void FixedUpdate() {
-        // Konstant fart framåt
+        // Konstant fart framåt - använder velocity för bättre fysikkänsla
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, speed);
     }
 
-    void OnCollisionEnter(Collision col)
-    {
+    void OnCollisionEnter(Collision col) {
         if (col.gameObject.CompareTag("Ground")) isGrounded = true;
         
         if (col.gameObject.CompareTag("Obstacle")) {
