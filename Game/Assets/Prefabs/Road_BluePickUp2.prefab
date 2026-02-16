@@ -85,6 +85,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Road
       objectReference: {fileID: 0}
+    - target: {fileID: 1425522626871989975, guid: af43238e07a0a4106a4711197bc0ad75, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
     - target: {fileID: 4241085922848872697, guid: af43238e07a0a4106a4711197bc0ad75, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -92,6 +96,18 @@ PrefabInstance:
     - target: {fileID: 6294215811151862588, guid: af43238e07a0a4106a4711197bc0ad75, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8182647760484715808, guid: af43238e07a0a4106a4711197bc0ad75, type: 3}
+      propertyPath: m_Size.y
+      value: 0.32036483
+      objectReference: {fileID: 0}
+    - target: {fileID: 8182647760484715808, guid: af43238e07a0a4106a4711197bc0ad75, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8182647760484715808, guid: af43238e07a0a4106a4711197bc0ad75, type: 3}
+      propertyPath: m_Center.y
+      value: -0.20323163
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -111,9 +111,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Road
       objectReference: {fileID: 0}
+<<<<<<< HEAD
     - target: {fileID: 1425522626871989975, guid: af43238e07a0a4106a4711197bc0ad75, type: 3}
       propertyPath: m_TagString
       value: Ground
+=======
+    - target: {fileID: 8182647760484715808, guid: af43238e07a0a4106a4711197bc0ad75, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+>>>>>>> 66f571f7d7bf4f0cac8302c7db0081a7b3d4b2bd
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

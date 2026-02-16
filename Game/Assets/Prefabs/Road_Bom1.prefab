@@ -111,6 +111,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Road
       objectReference: {fileID: 0}
+    - target: {fileID: 4906475122762663334, guid: af43238e07a0a4106a4711197bc0ad75, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 8182647760484715808, guid: af43238e07a0a4106a4711197bc0ad75, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -148,8 +156,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 0.4689293, z: 1}
+  m_Center: {x: 0, y: -0.26553535, z: 0}
 --- !u!1001 &6494719344871302977
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -158,6 +166,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5142926440553336521}
     m_Modifications:
+    - target: {fileID: 1507043279060420205, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1507043279062685869, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
       propertyPath: m_Name
       value: baum_dmg
@@ -254,8 +266,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.752732, y: 0.27819893, z: 0.5031144}
-  m_Center: {x: 1.6967427, y: 1.3095031, z: -0.0010670254}
+  m_Size: {x: 4.004991, y: 0.61012197, z: 0.5031144}
+  m_Center: {x: 1.8228718, y: 0.8874952, z: -0.0010670254}
 --- !u!4 &5677903565579166668 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1507043279062713485, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
