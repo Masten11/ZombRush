@@ -133,8 +133,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: roadOffset
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: concreteWidth
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: buildingOffset
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: concretePrefab
+      value: 
+      objectReference: {fileID: 1629558020400044465, guid: 55eb0762af4864917919afdeb8dd6662, type: 3}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: roadPrefabs.Array.size
-      value: 7
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: 'roadPrefabs.Array.data[1]'
@@ -163,7 +179,35 @@ PrefabInstance:
     - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: 'roadPrefabs.Array.data[7]'
       value: 
-      objectReference: {fileID: 1425522626871989975, guid: 74e22988271bb4e6a94239f77d9251ff, type: 3}
+      objectReference: {fileID: 1326417632801637733, guid: d48ac1e67355744de8afa7bd274c1aca, type: 3}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: 'roadPrefabs.Array.data[8]'
+      value: 
+      objectReference: {fileID: 42339342742776835, guid: 68bf37cc94bd54481be399c173aac34b, type: 3}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: 'roadPrefabs.Array.data[9]'
+      value: 
+      objectReference: {fileID: 42339342742776835, guid: 5a0d0f75b828047efbbacc4dbfd53ccb, type: 3}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: availableBuildings.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: availableBuildings.Array.data[4].name
+      value: Gasstation
+      objectReference: {fileID: 0}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: availableBuildings.Array.data[4].width
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: availableBuildings.Array.data[4].prefab
+      value: 
+      objectReference: {fileID: 2184082854691780477, guid: 32444862e54a7ba4d972f8cbaac278a6, type: 3}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: availableBuildings.Array.data[4].rotationOffset
+      value: -90
+      objectReference: {fileID: 0}
     - target: {fileID: 4595288556413273653, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
