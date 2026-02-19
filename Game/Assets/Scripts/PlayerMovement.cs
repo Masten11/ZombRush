@@ -4,15 +4,20 @@ using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Inställningar")]
-    public float speed = 10f;
-    public float jumpForce = 12f;
-    public float laneDistance = 3f; 
+    [Header("Speed Progression")]
+    public float startSpeed = 25f;
+    public float maxSpeed = 100f;
+    public float accelerationRate = 0.8f;
+
+    public float jumpForce = 26f;
+    public float laneDistance = 10f;
     public float sideSpeed = 15f;
 
     [Header("Roll Inställningar")]
     public float rollDuration = 1.0f;
     public float rollHeightMultiplier = 0.5f;
+
+    private float speed;   // 🔥 INTE public längre
 
     private Rigidbody rb;
     private CapsuleCollider playerCollider;
@@ -25,22 +30,25 @@ public class PlayerMovement : MonoBehaviour
     private float originalHeight;
     private Vector3 originalCenter;
 
-    void Start() 
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
         playerCollider = GetComponent<CapsuleCollider>();
-
-        // Hämta Animator även om den sitter på child
         anim = GetComponentInChildren<Animator>();
 
         originalHeight = playerCollider.height;
         originalCenter = playerCollider.center;
+
+        speed = startSpeed;
     }
 
-    void Update() 
+    void Update()
     {
+        // Progressiv fartökning
+        speed = Mathf.MoveTowards(speed, maxSpeed, accelerationRate * Time.deltaTime);
+
         // Hopp
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isRolling) 
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isRolling)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
@@ -50,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Roll
-        if (Input.GetKeyDown(KeyCode.DownArrow) && !isRolling) 
+        if (Input.GetKeyDown(KeyCode.DownArrow) && !isRolling)
         {
             StartCoroutine(PerformRoll());
         }
@@ -59,14 +67,13 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.RightArrow) && currentLane < 2) currentLane++;
         if (Input.GetKeyDown(KeyCode.LeftArrow) && currentLane > 0) currentLane--;
 
-        // Sidled
         float targetX = (currentLane - 1) * laneDistance;
         Vector3 newPos = transform.position;
         newPos.x = Mathf.Lerp(newPos.x, targetX, Time.deltaTime * sideSpeed);
         transform.position = newPos;
     }
 
-    IEnumerator PerformRoll() 
+    IEnumerator PerformRoll()
     {
         isRolling = true;
         anim.SetBool("isRolling", true);
@@ -74,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
         playerCollider.height = originalHeight * rollHeightMultiplier;
         playerCollider.center = new Vector3(originalCenter.x, originalCenter.y / 2f, originalCenter.z);
 
-        if (!isGrounded) 
+        if (!isGrounded)
         {
             rb.AddForce(Vector3.down * 10f, ForceMode.Impulse);
         }
@@ -88,21 +95,20 @@ public class PlayerMovement : MonoBehaviour
         isRolling = false;
     }
 
-    void FixedUpdate() 
+    void FixedUpdate()
     {
-        // Använd rätt velocity
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, speed);
     }
 
-    void OnCollisionEnter(Collision col) 
+    void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.CompareTag("Ground")) 
+        if (col.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
             anim.SetBool("isGrounded", true);
         }
 
-        if (col.gameObject.CompareTag("Obstacle")) 
+        if (col.gameObject.CompareTag("Obstacle"))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
