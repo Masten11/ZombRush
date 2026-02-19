@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class PlayerMovement : MonoBehaviour
     public float rollDuration = 1.0f;
     public float rollHeightMultiplier = 0.5f;
 
+    [Header("UI & Timer")]
+    public Text timerText; 
+    private float startTime;
+
     private float speed;   // 🔥 INTE public längre
 
     private Rigidbody rb;
@@ -32,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        startTime = Time.time;
         rb = GetComponent<Rigidbody>();
         playerCollider = GetComponent<CapsuleCollider>();
         anim = GetComponentInChildren<Animator>();
@@ -44,6 +50,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+
+        if (timerText != null){
+        float t = Time.time - startTime;
+        string minutes = ((int)t / 60).ToString("00");
+        string seconds = (t % 60).ToString("00");
+        timerText.text = "TID: " + minutes + ":" + seconds;
+        
+        }
         // Progressiv fartökning
         speed = Mathf.MoveTowards(speed, maxSpeed, accelerationRate * Time.deltaTime);
 
