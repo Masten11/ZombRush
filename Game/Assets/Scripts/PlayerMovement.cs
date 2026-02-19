@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
         float t = Time.time - startTime;
         string minutes = ((int)t / 60).ToString("00");
         string seconds = (t % 60).ToString("00");
-        timerText.text = "TID: " + minutes + ":" + seconds;
+        timerText.text =  minutes + ":" + seconds;
         
         }
         // Progressiv fartökning
