@@ -229,7 +229,7 @@ PrefabInstance:
       objectReference: {fileID: 1629558020400044465, guid: 55eb0762af4864917919afdeb8dd6662, type: 3}
     - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: roadPrefabs.Array.size
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: 'roadPrefabs.Array.data[1]'
@@ -275,6 +275,10 @@ PrefabInstance:
       propertyPath: 'roadPrefabs.Array.data[11]'
       value: 
       objectReference: {fileID: 42339342742776835, guid: 760eb598c150149c8912f7923748a3f3, type: 3}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: 'roadPrefabs.Array.data[12]'
+      value: 
+      objectReference: {fileID: 42339342742776835, guid: 18add81bb6e39428f9f0de76fb83c462, type: 3}
     - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: availableBuildings.Array.size
       value: 4
