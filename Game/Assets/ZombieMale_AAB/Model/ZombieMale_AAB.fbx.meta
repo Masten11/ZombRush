@@ -1,14 +1,51 @@
 fileFormatVersion: 2
 guid: 1dd9c954362f1eb4a86dcc2c3013fd91
+AssetOrigin:
+  serializedVersion: 1
+  productId: 336744
+  packageName: FREE Zombie Male AAB
+  packageVersion: 1.0
+  assetPath: Assets/ZombieMale_AAB/Model/ZombieMale_AAB.fbx
+  uploadId: 796708
 ModelImporter:
-  serializedVersion: 21300
+  serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ZombieMale_Body_MAT_V1
+    second: {fileID: 2100000, guid: fcd772e313556ac428aaabcc5f2559d8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ZombieMale_Head_V1_MAT
+    second: {fileID: 2100000, guid: f2f48ab58d320434780b05574a2ec390, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ZombieMale_LowerBody_MAT_V1
+    second: {fileID: 2100000, guid: f9cbf863d29f7524ea2a530092898beb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ZombieMale_Shirt_MAT_V1
+    second: {fileID: 2100000, guid: f2f48ab58d320434780b05574a2ec390, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ZombieMale_Teeth_MAT_V1
+    second: {fileID: 2100000, guid: 37ec766b6690c344aaf77aff4955147e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Zombie_Eyes_MAT_V1
+    second: {fileID: 2100000, guid: 6a138b6af66dbf74ea74bcae42f04e24, type: 2}
   materials:
-    materialImportMode: 1
+    materialImportMode: 2
     materialName: 1
     materialSearch: 1
-    materialLocation: 0
+    materialLocation: 1
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -16,8 +53,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 1
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -40,6 +75,7 @@ ModelImporter:
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
@@ -67,6 +103,7 @@ ModelImporter:
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -625,8 +662,7 @@ ModelImporter:
     - name: lowerarm_twist_01_l
       parentName: lowerarm_l
       position: {x: -0.13625497, y: 0.000000011911788, z: 0}
-      rotation: {x: -0.00000009052245, y: -0.00000009782254, z: -0.000000029802303,
-        w: 1}
+      rotation: {x: -0.00000009052245, y: -0.00000009782254, z: -0.000000029802303, w: 1}
       scale: {x: 1.0000007, y: 1.000002, z: 1.0000004}
     - name: upperarm_twist_01_l
       parentName: upperarm_l
@@ -771,8 +807,7 @@ ModelImporter:
     - name: calf_l
       parentName: thigh_l
       position: {x: 0.4334126, y: 3.155809e-16, z: 3.5527135e-16}
-      rotation: {x: -0.000000052154054, y: -0.000000085681656, z: 0.00000017287671,
-        w: 1}
+      rotation: {x: -0.000000052154054, y: -0.000000085681656, z: 0.00000017287671, w: 1}
       scale: {x: 1.0000004, y: 0.99999934, z: 1.0000006}
     - name: calf_twist_01_l
       parentName: calf_l
@@ -802,8 +837,7 @@ ModelImporter:
     - name: calf_r
       parentName: thigh_r
       position: {x: -0.4334126, y: -1.6708856e-16, z: -4.973799e-16}
-      rotation: {x: -0.00000006414484, y: -0.00000020582229, z: 0.00000039162114,
-        w: 1}
+      rotation: {x: -0.00000006414484, y: -0.00000020582229, z: 0.00000039162114, w: 1}
       scale: {x: 1.0000032, y: 1.0000015, z: 1.0000042}
     - name: calf_twist_01_r
       parentName: calf_r
@@ -918,15 +952,9 @@ ModelImporter:
   humanoidOversampling: 1
   avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 0
   remapMaterialsIfMaterialImportModeIsNone: 0
   additionalBone: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 336744
-  packageName: FREE Zombie Male AAB
-  packageVersion: 1.0
-  assetPath: Assets/ZombieMale_AAB/Model/ZombieMale_AAB.fbx
-  uploadId: 796708
