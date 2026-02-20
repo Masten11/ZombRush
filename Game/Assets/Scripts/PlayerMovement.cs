@@ -15,14 +15,14 @@ public class PlayerMovement : MonoBehaviour
     public float sideSpeed = 15f;
 
     [Header("Roll Inställningar")]
-    public float rollDuration = 1.0f;
+    public float rollDuration = 0.65f;
     public float rollHeightMultiplier = 0.5f;
 
     [Header("UI & Timer")]
     public Text timerText; 
     private float startTime;
 
-    private float speed;   // 🔥 INTE public längre
+    private float speed;
 
     private Rigidbody rb;
     private CapsuleCollider playerCollider;
@@ -50,14 +50,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-
-        if (timerText != null){
-        float t = Time.time - startTime;
-        string minutes = ((int)t / 60).ToString("00");
-        string seconds = (t % 60).ToString("00");
-        timerText.text =  minutes + ":" + seconds;
-        
+        if (timerText != null)
+        {
+            float t = Time.time - startTime;
+            string minutes = ((int)t / 60).ToString("00");
+            string seconds = (t % 60).ToString("00");
+            timerText.text = minutes + ":" + seconds;
         }
+
         // Progressiv fartökning
         speed = Mathf.MoveTowards(speed, maxSpeed, accelerationRate * Time.deltaTime);
 
@@ -71,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
             anim.SetBool("isGrounded", false);
         }
 
-        // Roll
+        // Roll (Trigger istället för Bool)
         if (Input.GetKeyDown(KeyCode.DownArrow) && !isRolling)
         {
             StartCoroutine(PerformRoll());
@@ -87,27 +87,25 @@ public class PlayerMovement : MonoBehaviour
         transform.position = newPos;
     }
 
-    IEnumerator PerformRoll()
-    {
-        isRolling = true;
-        anim.SetBool("isRolling", true);
+   IEnumerator PerformRoll()
+{
+    isRolling = true;
 
-        playerCollider.height = originalHeight * rollHeightMultiplier;
-        playerCollider.center = new Vector3(originalCenter.x, originalCenter.y / 2f, originalCenter.z);
+    anim.SetTrigger("Roll");
 
-        if (!isGrounded)
-        {
-            rb.AddForce(Vector3.down * 10f, ForceMode.Impulse);
-        }
+    // Sänk collider direkt
+    playerCollider.height = originalHeight * rollHeightMultiplier;
+    playerCollider.center = new Vector3(originalCenter.x, originalCenter.y / 2f, originalCenter.z);
 
-        yield return new WaitForSeconds(rollDuration);
+    
+    yield return new WaitForSeconds(0.6f);
 
-        playerCollider.height = originalHeight;
-        playerCollider.center = originalCenter;
+    // Återställ collider
+    playerCollider.height = originalHeight;
+    playerCollider.center = originalCenter;
 
-        anim.SetBool("isRolling", false);
-        isRolling = false;
-    }
+    isRolling = false;
+}
 
     void FixedUpdate()
     {
