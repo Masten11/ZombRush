@@ -371,7 +371,7 @@ PrefabInstance:
       objectReference: {fileID: 1629558020400044465, guid: 55eb0762af4864917919afdeb8dd6662, type: 3}
     - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: roadPrefabs.Array.size
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: 'roadPrefabs.Array.data[1]'
@@ -421,6 +421,10 @@ PrefabInstance:
       propertyPath: 'roadPrefabs.Array.data[12]'
       value: 
       objectReference: {fileID: 42339342742776835, guid: 18add81bb6e39428f9f0de76fb83c462, type: 3}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: 'roadPrefabs.Array.data[13]'
+      value: 
+      objectReference: {fileID: 7605720665792159892, guid: fc6088b12d4014855ba7b15354824392, type: 3}
     - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: availableBuildings.Array.size
       value: 4
@@ -750,7 +754,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 0.5754717, g: 0.48046458, b: 0.5697137, a: 1}
+  m_Color: {r: 0.7193457, g: 0.61667854, b: 0.7735849, a: 1}
   m_Intensity: 0.6
   m_Range: 10
   m_SpotAngle: 30
@@ -834,15 +838,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7082248585146315927, guid: 40c593ab557f44f6b8e982f0e9b8c7c1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.38
       objectReference: {fileID: 0}
     - target: {fileID: 7082248585146315927, guid: 40c593ab557f44f6b8e982f0e9b8c7c1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.35
+      value: 8.73
       objectReference: {fileID: 0}
     - target: {fileID: 7082248585146315927, guid: 40c593ab557f44f6b8e982f0e9b8c7c1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -11.62
+      value: -10.88
       objectReference: {fileID: 0}
     - target: {fileID: 7082248585146315927, guid: 40c593ab557f44f6b8e982f0e9b8c7c1, type: 3}
       propertyPath: m_LocalRotation.w

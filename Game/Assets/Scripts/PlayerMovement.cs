@@ -64,6 +64,11 @@ public class PlayerMovement : MonoBehaviour
         // Hopp
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isRolling)
         {
+            // FIX: Reset the Y (vertical) velocity to 0 before jumping.
+            // We keep the X and Z velocities exactly as they are so we don't lose forward speed.
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+            // Now apply the jump force
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
 
@@ -122,7 +127,20 @@ public class PlayerMovement : MonoBehaviour
 
         if (col.gameObject.CompareTag("Obstacle"))
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            // Check the direction of the surface we hit.
+            // A normal.y of 1 means perfectly flat ground. 
+            // We use > 0.5f to allow landing on slightly angled car roofs/hoods.
+            if (col.contacts[0].normal.y > 0.5f) 
+            {
+                // We landed on top! Treat the obstacle like ground.
+                isGrounded = true;
+                anim.SetBool("isGrounded", true);
+            }
+            else
+            {
+                // We hit the side or the front. Game over.
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
         }
     }
 }
