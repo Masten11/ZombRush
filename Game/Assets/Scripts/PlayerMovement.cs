@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Roll Inställningar")]
     public float rollDuration = 0.65f;
-    public float rollHeightMultiplier = 0.5f;
+    public float rollHeightMultiplier = 0.2f;
 
     [Header("UI & Timer")]
     public Text timerText; 
@@ -103,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
     playerCollider.center = new Vector3(originalCenter.x, originalCenter.y / 2f, originalCenter.z);
 
     
-    yield return new WaitForSeconds(0.6f);
+    yield return new WaitForSeconds(0.4f);
 
     // Återställ collider
     playerCollider.height = originalHeight;
