@@ -143,7 +143,7 @@ public class PlayerMovement : MonoBehaviour
                 if (LeaderboardManager.Instance != null)
                 LeaderboardManager.Instance.SubmitScore("Player", t);
 
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                SceneManager.LoadScene("MainViewScene");
             }
         }
     }
