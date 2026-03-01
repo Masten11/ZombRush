@@ -138,6 +138,11 @@ public class PlayerMovement : MonoBehaviour
             else
             {
                 // We hit the side or the front. Game over.
+                float t = Time.time - startTime;
+
+                if (LeaderboardManager.Instance != null)
+                LeaderboardManager.Instance.SubmitScore("Player", t);
+
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
