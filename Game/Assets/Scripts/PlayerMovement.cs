@@ -61,8 +61,8 @@ public class PlayerMovement : MonoBehaviour
         // Progressiv fartökning
         speed = Mathf.MoveTowards(speed, maxSpeed, accelerationRate * Time.deltaTime);
 
-        // Hopp
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isRolling)
+        // Hopp (Space / UpArrow / W)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) && isGrounded && !isRolling)
         {
             // FIX: Reset the Y (vertical) velocity to 0 before jumping.
             // We keep the X and Z velocities exactly as they are so we don't lose forward speed.
@@ -76,15 +76,15 @@ public class PlayerMovement : MonoBehaviour
             anim.SetBool("isGrounded", false);
         }
 
-        // Roll (Trigger istället för Bool)
-        if (Input.GetKeyDown(KeyCode.DownArrow) && !isRolling)
+        // Roll (DownArrow / S)
+        if ((Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) && !isRolling)
         {
             StartCoroutine(PerformRoll());
         }
 
-        // Filbyte
-        if (Input.GetKeyDown(KeyCode.RightArrow) && currentLane < 2) currentLane++;
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && currentLane > 0) currentLane--;
+        // Filbyte (RightArrow/D, LeftArrow/A)
+        if ((Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) && currentLane < 2) currentLane++;
+        if ((Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) && currentLane > 0) currentLane--;
 
         float targetX = (currentLane - 1) * laneDistance;
         Vector3 newPos = transform.position;
@@ -92,25 +92,24 @@ public class PlayerMovement : MonoBehaviour
         transform.position = newPos;
     }
 
-   IEnumerator PerformRoll()
-{
-    isRolling = true;
+    IEnumerator PerformRoll()
+    {
+        isRolling = true;
 
-    anim.SetTrigger("Roll");
+        anim.SetTrigger("Roll");
 
-    // Sänk collider direkt
-    playerCollider.height = originalHeight * rollHeightMultiplier;
-    playerCollider.center = new Vector3(originalCenter.x, originalCenter.y / 2f, originalCenter.z);
+        // Sänk collider direkt
+        playerCollider.height = originalHeight * rollHeightMultiplier;
+        playerCollider.center = new Vector3(originalCenter.x, originalCenter.y / 2f, originalCenter.z);
 
-    
-    yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.4f);
 
-    // Återställ collider
-    playerCollider.height = originalHeight;
-    playerCollider.center = originalCenter;
+        // Återställ collider
+        playerCollider.height = originalHeight;
+        playerCollider.center = originalCenter;
 
-    isRolling = false;
-}
+        isRolling = false;
+    }
 
     void FixedUpdate()
     {
