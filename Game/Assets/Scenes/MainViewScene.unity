@@ -1800,6 +1800,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LeaderBoardManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4467662235702458374, guid: 492bc9a3419dc458cba91fa6a12c20f9, type: 3}
+      propertyPath: maxEntries
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8339560894908853646, guid: 492bc9a3419dc458cba91fa6a12c20f9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.4843056
