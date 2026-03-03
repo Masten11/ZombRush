@@ -21,19 +21,19 @@ public class PlayerAudio : MonoBehaviour
         if (hasDied) return;
         hasDied = true;
 
-        sfxSource.PlayOneShot(crashClip);
+        sfxSource.PlayOneShot(crashClip, 2.0f);
         Invoke(nameof(PlayGameOver), 0.4f);
         StartCoroutine(LoadSceneAfterDelay());
     }
 
     private void PlayGameOver()
     {
-        sfxSource.PlayOneShot(gameOverClip);
+        sfxSource.PlayOneShot(gameOverClip, 1.8f);
     }
 
     private IEnumerator LoadSceneAfterDelay()
     {
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(2.7f);
         SceneManager.LoadScene("MainViewScene");
     }
 
