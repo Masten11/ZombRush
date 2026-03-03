@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5836340633592793276}
   - component: {fileID: -1428593244569697395}
   - component: {fileID: 1095255653581757691}
+  - component: {fileID: 2248288021460269355}
   m_Layer: 0
   m_Name: PlankSpecial
   m_TagString: Breakable
@@ -170,6 +171,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71d20919861fd45de8e08ef372241dd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxSource: {fileID: 0}
+  crashClip: {fileID: 0}
+  gameOverClip: {fileID: 0}
+--- !u!114 &2248288021460269355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565426210780141772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05729ec2c83984ff1b7b07836541a075, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   breakForce: 10
