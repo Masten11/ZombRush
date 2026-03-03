@@ -35,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
     private float originalHeight;
     private Vector3 originalCenter;
 
+    
     void Start()
     {
         startTime = Time.time;
@@ -46,6 +47,8 @@ public class PlayerMovement : MonoBehaviour
         originalCenter = playerCollider.center;
 
         speed = startSpeed;
+
+   
     }
 
     void Update()
@@ -142,9 +145,14 @@ public class PlayerMovement : MonoBehaviour
 
                 if (LeaderboardManager.Instance != null)
                 LeaderboardManager.Instance.SubmitScore("Player", t);
+                 GetComponent<PlayerAudio>()?.DieWithSounds();
 
-                SceneManager.LoadScene("MainViewScene");
+                
+
+               
             }
         }
     }
+
+   
 }
