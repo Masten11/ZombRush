@@ -683,7 +683,7 @@ PrefabInstance:
       objectReference: {fileID: 1629558020400044465, guid: 55eb0762af4864917919afdeb8dd6662, type: 3}
     - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: roadPrefabs.Array.size
-      value: 14
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: 'roadPrefabs.Array.data[1]'
@@ -737,6 +737,18 @@ PrefabInstance:
       propertyPath: 'roadPrefabs.Array.data[13]'
       value: 
       objectReference: {fileID: 42339342742776835, guid: 5a0d0f75b828047efbbacc4dbfd53ccb, type: 3}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: 'roadPrefabs.Array.data[14]'
+      value: 
+      objectReference: {fileID: 42339342742776835, guid: fe8d53a366867441fa3f095c6414ed1b, type: 3}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: 'roadPrefabs.Array.data[15]'
+      value: 
+      objectReference: {fileID: 1326417632801637733, guid: d59de5615bf5c4827a186f2c2ad1c631, type: 3}
+    - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: 'roadPrefabs.Array.data[16]'
+      value: 
+      objectReference: {fileID: 1326417632801637733, guid: 0e2a709a58fd841798f9af0c8e2c318b, type: 3}
     - target: {fileID: 1877917224093152375, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: availableBuildings.Array.size
       value: 4
@@ -800,6 +812,10 @@ PrefabInstance:
     - target: {fileID: 5828494115409410568, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: m_Name
       value: LevelGenerator
+      objectReference: {fileID: 0}
+    - target: {fileID: 6532004427024809249, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: speed
