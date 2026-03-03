@@ -36,4 +36,13 @@ public class PlayerAudio : MonoBehaviour
         yield return new WaitForSeconds(1.2f);
         SceneManager.LoadScene("MainViewScene");
     }
+
+    private void Update()
+{
+    if (Input.GetKeyDown(KeyCode.P))
+    {
+        Debug.Log("P tryckt - spelar crashClip");
+        sfxSource.PlayOneShot(crashClip);
+    }
+}
 }
