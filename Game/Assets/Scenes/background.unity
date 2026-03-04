@@ -634,7 +634,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71d20919861fd45de8e08ef372241dd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameOverClip: {fileID: 8300000, guid: a81c9b92164ac431db4d19b4ecd5262c, type: 3}
 --- !u!1 &833580054
 GameObject:
   m_ObjectHideFlags: 0
@@ -965,17 +964,25 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8043635078713189957, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: speed
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: maxSpeed
-      value: 100
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: jumpForce
       value: 26
+      objectReference: {fileID: 0}
+    - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: sideSpeed
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: timerText
@@ -990,8 +997,16 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: apexThreshold
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
+      propertyPath: fallMultiplier
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: accelerationRate
-      value: 0.8
+      value: 0.6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
