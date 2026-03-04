@@ -6,13 +6,15 @@ public class MusicPlayer : MonoBehaviour
 
     void Awake()
     {
-        if (instance != null)
+        // Om det redan finns en spelare, ta bort den här nya direkt
+        if (instance != null && instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
         instance = this;
+        // Detta är nyckeln: Musiken rörs aldrig vid scenbyten
         DontDestroyOnLoad(gameObject);
     }
 }
