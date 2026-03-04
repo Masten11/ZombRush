@@ -154,5 +154,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-   
+ public bool IsGrounded => isGrounded;
+public float ForwardSpeed => rb != null ? rb.linearVelocity.z : 0f;
 }
