@@ -18,8 +18,12 @@ public class PlayerMovement : MonoBehaviour
     public float rollDuration = 0.65f;
     public float rollHeightMultiplier = 0.2f;
 
+    [Header("Air Slam")]
+    public float slamDownForce = 60f;   // higher = faster drop
+    public float maxDownSpeed = 50f;    // cap fall speed while slamming
+
     [Header("UI & Timer")]
-    public Text timerText; 
+    public Text timerText;
     private float startTime;
 
     private float speed;
@@ -35,7 +39,8 @@ public class PlayerMovement : MonoBehaviour
     private float originalHeight;
     private Vector3 originalCenter;
 
-    
+    private bool isSlammingDown = false;
+
     void Start()
     {
         startTime = Time.time;
@@ -47,8 +52,6 @@ public class PlayerMovement : MonoBehaviour
         originalCenter = playerCollider.center;
 
         speed = startSpeed;
-
-   
     }
 
     void Update()
@@ -74,15 +77,34 @@ public class PlayerMovement : MonoBehaviour
             // Now apply the jump force
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
+            isSlammingDown = false;
 
             anim.SetTrigger("Jump");
             anim.SetBool("isGrounded", false);
         }
 
-        // Roll (DownArrow / S)
-        if ((Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) && !isRolling)
+        // Roll (DownArrow / S)  -> Ground roll, Air slam only
+        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
         {
-            StartCoroutine(PerformRoll());
+            if (isGrounded && !isRolling)
+            {
+                StartCoroutine(PerformRoll());
+            }
+            else if (!isGrounded && !isRolling)
+            {
+                // In air: just drop fast (no roll after)
+                isSlammingDown = true;
+
+                // Kill upward velocity so we start falling immediately
+                rb.linearVelocity = new Vector3(
+                    rb.linearVelocity.x,
+                    Mathf.Min(0f, rb.linearVelocity.y),
+                    rb.linearVelocity.z
+                );
+
+                // Add a strong downward impulse
+                rb.AddForce(Vector3.down * slamDownForce, ForceMode.Impulse);
+            }
         }
 
         // Filbyte (RightArrow/D, LeftArrow/A)
@@ -116,7 +138,13 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, speed);
+        // keep forward speed, optionally cap fall speed when slamming
+        float y = rb.linearVelocity.y;
+
+        if (isSlammingDown && y < -maxDownSpeed)
+            y = -maxDownSpeed;
+
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, y, speed);
     }
 
     void OnCollisionEnter(Collision col)
@@ -124,6 +152,7 @@ public class PlayerMovement : MonoBehaviour
         if (col.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            isSlammingDown = false;
             anim.SetBool("isGrounded", true);
         }
 
@@ -132,10 +161,11 @@ public class PlayerMovement : MonoBehaviour
             // Check the direction of the surface we hit.
             // A normal.y of 1 means perfectly flat ground. 
             // We use > 0.5f to allow landing on slightly angled car roofs/hoods.
-            if (col.contacts[0].normal.y > 0.5f) 
+            if (col.contacts[0].normal.y > 0.5f)
             {
                 // We landed on top! Treat the obstacle like ground.
                 isGrounded = true;
+                isSlammingDown = false;
                 anim.SetBool("isGrounded", true);
             }
             else
@@ -144,16 +174,13 @@ public class PlayerMovement : MonoBehaviour
                 float t = Time.time - startTime;
 
                 if (LeaderboardManager.Instance != null)
-                LeaderboardManager.Instance.SubmitScore("Player", t);
-                 GetComponent<PlayerAudio>()?.DieWithSounds();
+                    LeaderboardManager.Instance.SubmitScore("Player", t);
 
-                
-
-               
+                GetComponent<PlayerAudio>()?.DieWithSounds();
             }
         }
     }
 
- public bool IsGrounded => isGrounded;
-public float ForwardSpeed => rb != null ? rb.linearVelocity.z : 0f;
+    public bool IsGrounded => isGrounded;
+    public float ForwardSpeed => rb != null ? rb.linearVelocity.z : 0f;
 }
