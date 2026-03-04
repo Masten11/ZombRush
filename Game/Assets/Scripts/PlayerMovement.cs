@@ -18,10 +18,13 @@ public class PlayerMovement : MonoBehaviour
     public float rollDuration = 0.65f;
     public float rollHeightMultiplier = 0.2f;
 
-    [Header("Air Slam")]
-    public float slamDownForce = 60f;   // higher = faster drop
-    public float maxDownSpeed = 50f;    // cap fall speed while slamming
+    [Header("Air Slam & Gravity")]
+    public float slamDownForce = 40f;   
+    public float maxDownSpeed = 30f;    
+    public float fallMultiplier = 1.8f; // NEW: Pulls you down fast when you fall off ledges
+    public float groundCheckBuffer = 0.4f; // NEW: Prevents ramp "quicksand" stutter
 
+    public float apexThreshold = 2f; // NEW: Gravity kicks in when upward speed drops below this
     [Header("UI & Timer")]
     public Text timerText;
     private float startTime;
@@ -33,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator anim;
 
     private bool isGrounded;
+    private bool jumped = false; // Tracks if we intentionally jumped
     private bool isRolling = false;
     private int currentLane = 1;
 
@@ -56,6 +60,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        // 1. UPDATE GROUND STATE FIRST
+        UpdateGroundedState();
+
         if (timerText != null)
         {
             float t = Time.time - startTime;
@@ -70,20 +77,16 @@ public class PlayerMovement : MonoBehaviour
         // Hopp (Space / UpArrow / W)
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) && isGrounded && !isRolling)
         {
-            // FIX: Reset the Y (vertical) velocity to 0 before jumping.
-            // We keep the X and Z velocities exactly as they are so we don't lose forward speed.
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-
-            // Now apply the jump force
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isGrounded = false;
+            
+            jumped = true; // We pressed jump!
             isSlammingDown = false;
 
             anim.SetTrigger("Jump");
-            anim.SetBool("isGrounded", false);
         }
 
-        // Roll (DownArrow / S)  -> Ground roll, Air slam only
+        // Roll (DownArrow / S) 
         if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
         {
             if (isGrounded && !isRolling)
@@ -92,17 +95,8 @@ public class PlayerMovement : MonoBehaviour
             }
             else if (!isGrounded && !isRolling)
             {
-                // In air: just drop fast (no roll after)
                 isSlammingDown = true;
-
-                // Kill upward velocity so we start falling immediately
-                rb.linearVelocity = new Vector3(
-                    rb.linearVelocity.x,
-                    Mathf.Min(0f, rb.linearVelocity.y),
-                    rb.linearVelocity.z
-                );
-
-                // Add a strong downward impulse
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, Mathf.Min(0f, rb.linearVelocity.y), rb.linearVelocity.z);
                 rb.AddForce(Vector3.down * slamDownForce, ForceMode.Impulse);
             }
         }
@@ -117,58 +111,93 @@ public class PlayerMovement : MonoBehaviour
         transform.position = newPos;
     }
 
+    private void UpdateGroundedState()
+    {
+        bool wasGrounded = isGrounded;
+        
+        // 1. Start the laser at the exact center of the Capsule, no matter where the pivot is.
+        Vector3 rayStart = transform.position + originalCenter;
+        
+        // 2. Length is half the capsule height + your buffer to reach into the floor
+        float rayLength = (originalHeight / 2f) + groundCheckBuffer;
+        
+        RaycastHit hit;
+        bool hitGround = false;
+
+        // 3. Shoot the laser and ONLY count it if it hits your specific tags
+        if (Physics.Raycast(rayStart, Vector3.down, out hit, rayLength))
+        {
+            if (hit.collider.CompareTag("Ground") || hit.collider.CompareTag("Plank") || hit.collider.CompareTag("Obstacle"))
+            {
+                hitGround = true;
+            }
+        }
+
+        isGrounded = hitGround;
+
+        // Update Animator and States if our grounding changed
+        if (isGrounded && !wasGrounded)
+        {
+            anim.SetBool("isGrounded", true);
+            jumped = false; // Reset intentional jump when we land
+            isSlammingDown = false; // Reset the air slam!
+        }
+        else if (!isGrounded && wasGrounded)
+        {
+            anim.SetBool("isGrounded", false);
+        }
+    }
+
     IEnumerator PerformRoll()
     {
         isRolling = true;
-
         anim.SetTrigger("Roll");
 
-        // Sänk collider direkt
         playerCollider.height = originalHeight * rollHeightMultiplier;
         playerCollider.center = new Vector3(originalCenter.x, originalCenter.y / 2f, originalCenter.z);
 
         yield return new WaitForSeconds(0.4f);
 
-        // Återställ collider
         playerCollider.height = originalHeight;
         playerCollider.center = originalCenter;
 
         isRolling = false;
     }
 
-    void FixedUpdate()
+ void FixedUpdate()
     {
-        // keep forward speed, optionally cap fall speed when slamming
         float y = rb.linearVelocity.y;
 
+        // User's Air Slam limit
         if (isSlammingDown && y < -maxDownSpeed)
+        {
             y = -maxDownSpeed;
+        }
+
+        // IF WE RAN OFF A LEDGE OR RAMP (No intentional jump)
+        if (!isGrounded && !jumped)
+        {
+            // 1. KILL THE UPWARD LAUNCH
+            // If the ramp threw us up into the air, instantly flatten our trajectory.
+            if (y > 0)
+            {
+                y = 0f; 
+            }
+
+            // 2. THE SMOOTH FALL
+            // Apply the extra gravity to pull us down. 
+            y += Physics.gravity.y * fallMultiplier * Time.fixedDeltaTime;
+        }
 
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, y, speed);
     }
-
     void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
-            isSlammingDown = false;
-            anim.SetBool("isGrounded", true);
-        }
-
+        // Grounding is handled completely by UpdateGroundedState now. 
+        // This is ONLY for hitting a wall and Game Over.
         if (col.gameObject.CompareTag("Obstacle"))
         {
-            // Check the direction of the surface we hit.
-            // A normal.y of 1 means perfectly flat ground. 
-            // We use > 0.5f to allow landing on slightly angled car roofs/hoods.
-            if (col.contacts[0].normal.y > 0.5f)
-            {
-                // We landed on top! Treat the obstacle like ground.
-                isGrounded = true;
-                isSlammingDown = false;
-                anim.SetBool("isGrounded", true);
-            }
-            else
+            if (col.contacts[0].normal.y <= 0.5f)
             {
                 // We hit the side or the front. Game over.
                 float t = Time.time - startTime;

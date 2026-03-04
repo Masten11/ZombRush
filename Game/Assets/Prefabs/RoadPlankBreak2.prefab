@@ -105,9 +105,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7047002590107192889}
     m_Modifications:
+    - target: {fileID: 553933584280122150, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
+      propertyPath: m_Size.y
+      value: 0.50447327
+      objectReference: {fileID: 0}
+    - target: {fileID: 553933584280122150, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
+      propertyPath: m_Center.y
+      value: 0.8785775
+      objectReference: {fileID: 0}
+    - target: {fileID: 553933584280122150, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
+      propertyPath: m_Center.z
+      value: 0.026426112
+      objectReference: {fileID: 0}
     - target: {fileID: 1507043279062685869, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
       propertyPath: m_Name
       value: baum_dmg
+      objectReference: {fileID: 0}
+    - target: {fileID: 1507043279062685869, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
+      propertyPath: m_TagString
+      value: Obstacle
       objectReference: {fileID: 0}
     - target: {fileID: 1507043279062713485, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
       propertyPath: m_LocalScale.x
@@ -115,7 +131,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1507043279062713485, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3.5
+      value: 3.7
       objectReference: {fileID: 0}
     - target: {fileID: 1507043279062713485, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
       propertyPath: m_LocalScale.z
@@ -249,9 +265,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7047002590107192889}
     m_Modifications:
+    - target: {fileID: 553933584280122150, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
+      propertyPath: m_Size.x
+      value: 4.3280454
+      objectReference: {fileID: 0}
+    - target: {fileID: 553933584280122150, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
+      propertyPath: m_Size.y
+      value: 0.40190452
+      objectReference: {fileID: 0}
+    - target: {fileID: 553933584280122150, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
+      propertyPath: m_Center.x
+      value: 1.8608487
+      objectReference: {fileID: 0}
+    - target: {fileID: 553933584280122150, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
+      propertyPath: m_Center.y
+      value: 0.951703
+      objectReference: {fileID: 0}
+    - target: {fileID: 553933584280122150, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
+      propertyPath: m_Center.z
+      value: 0.026428163
+      objectReference: {fileID: 0}
     - target: {fileID: 1507043279062685869, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
       propertyPath: m_Name
       value: baum_dmg (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1507043279062685869, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
+      propertyPath: m_TagString
+      value: Obstacle
       objectReference: {fileID: 0}
     - target: {fileID: 1507043279062713485, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
       propertyPath: m_LocalScale.x
@@ -259,7 +299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1507043279062713485, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3.5
+      value: 3.8
       objectReference: {fileID: 0}
     - target: {fileID: 1507043279062713485, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
       propertyPath: m_LocalScale.z
@@ -271,7 +311,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1507043279062713485, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.014838219
+      value: -0.06
       objectReference: {fileID: 0}
     - target: {fileID: 1507043279062713485, guid: 3de4db8311cb0c548966bd7ee0ab024f, type: 3}
       propertyPath: m_LocalPosition.z
