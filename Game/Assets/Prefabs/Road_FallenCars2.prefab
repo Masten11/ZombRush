@@ -751,6 +751,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Plank3 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6107334560404977573, guid: a2d31caed78b04c4bb4d503b4d1d8746, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7187685443133260745, guid: a2d31caed78b04c4bb4d503b4d1d8746, type: 3}
       propertyPath: m_LocalScale.x
       value: 12
