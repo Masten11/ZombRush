@@ -18,14 +18,20 @@ public class LevelManager : MonoBehaviour
     public float tileLength = 30f; 
     public int numberOfTiles = 5;  
 
-    [Header("Building Configuration")]
+    [Header("Foreground Buildings")]
     public BuildingType[] availableBuildings; 
     public float buildingOffset = 25f; 
 
+    // --- NEW: Dedicated array for your background prefabs ---
+    [Header("Background Buildings")]
+    public BuildingType[] backgroundBuildings; 
+    public float backgroundOffset = 45f; 
+    // --------------------------------------------------------
+
     [Header("Ground/Sidewalk Configuration")]
-    public GameObject concretePrefab; // Dra in din betong-prefab här
-    public float concreteWidth = 40f; // Hur bred betongen ska vara utåt
-    public float roadOffset = 10f;     // Hur bred hela din väg är (totalt)
+    public GameObject concretePrefab; 
+    public float concreteWidth = 40f; 
+    public float roadOffset = 10f;     
 
     private float spawnZ = 0f; 
     private float safeZone = 45f; 
@@ -58,48 +64,55 @@ public class LevelManager : MonoBehaviour
 
         if (spawnItems)
         {
-            // Spawna betongmark och hus på båda sidor
-            SpawnSide(go, -buildingOffset); // Vänster
-            SpawnSide(go, buildingOffset);  // Höger
+            SpawnSide(go, -buildingOffset); // Left
+            SpawnSide(go, buildingOffset);  // Right
         }
 
         activeTiles.Add(go);
         spawnZ += tileLength;
     }
 
-    // Kombinerad funktion för att spawna både mark och hus
     void SpawnSide(GameObject roadTile, float xPos)
     {
-    if (concretePrefab != null)
-    {
-        GameObject ground = Instantiate(concretePrefab, roadTile.transform);
+        if (concretePrefab != null)
+        {
+            GameObject ground = Instantiate(concretePrefab, roadTile.transform);
+            
+            float side = Mathf.Sign(xPos); 
+            float roadEdge = roadOffset / 2f;
+            float concreteX = (roadEdge + (concreteWidth / 2f)) * side;
+
+            ground.transform.localPosition = new Vector3(concreteX, -0.05f, tileLength / 2f);
+            ground.transform.localScale = new Vector3(concreteWidth, 0.1f, tileLength);
+        }
+
+        float baseRotation = (xPos > 0) ? -90f : 90f;
         
-        // 1. Ta reda på vilken sida vi är på (1 för höger, -1 för vänster)
-        float side = Mathf.Sign(xPos); 
+        // --- UPDATED: Pass the correct array to SpawnLane ---
+        
+        // 1. Spawn foreground buildings
+        SpawnLane(roadTile, xPos, baseRotation, availableBuildings);
 
-        // 2. Räkna ut var kanten på vägen är
-        float roadEdge = roadOffset / 2f;
-
-        // 3. Räkna ut mittenpunkten för betongplattan
-        // Den ska ligga vid kanten + halva sin egen bredd
-        float concreteX = (roadEdge + (concreteWidth / 2f)) * side;
-
-        // 4. Applicera position och storlek
-        ground.transform.localPosition = new Vector3(concreteX, -0.05f, tileLength / 2f);
-        ground.transform.localScale = new Vector3(concreteWidth, 0.1f, tileLength);
+        // 2. Spawn background buildings further out
+        float bgXPos = (xPos > 0) ? backgroundOffset : -backgroundOffset;
+        SpawnLane(roadTile, bgXPos, baseRotation, backgroundBuildings);
+        
+        // ----------------------------------------------------
     }
-
-    // Spawna husen som vanligt
-    float baseRotation = (xPos > 0) ? -90f : 90f;
-    SpawnLane(roadTile, xPos, baseRotation);
-    }
-    void SpawnLane(GameObject roadTile, float xPos, float baseRotation)
+    
+    // --- UPDATED: Added a 'buildingPool' parameter ---
+    void SpawnLane(GameObject roadTile, float xPos, float baseRotation, BuildingType[] buildingPool)
     {
+        // Safety check: skip if the array is empty so Unity doesn't throw errors
+        if (buildingPool == null || buildingPool.Length == 0) return;
+
         float currentZ = 0f;
         while (currentZ < tileLength)
         {
             List<BuildingType> validBuildings = new List<BuildingType>();
-            foreach (var b in availableBuildings)
+            
+            // Look through the specific array we passed in
+            foreach (var b in buildingPool) 
             {
                 if (currentZ + b.width <= tileLength) validBuildings.Add(b);
             }
