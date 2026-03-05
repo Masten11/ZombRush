@@ -1,18 +1,35 @@
 using UnityEngine;
 
-
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;  // Spelaren vi ska följa
-    public Vector3 offset;    // Avståndet till spelaren (t.ex. bakom och ovanför)
-    public float smoothSpeed = 0.125f; // Hur mjukt kameran följer (lägre = mjukare)
+    [Header("Target & Movement")]
+    public Transform target;  
+    public float smoothSpeed = 10f; // Make sure this is 10 or higher in the Inspector!
+
+    [Header("Cinematic Intro Settings")]
+    public Vector3 frontOffset = new Vector3(0f, 3f, 8f); 
+    public Vector3 frontRotation = new Vector3(10f, 180f, 0f); 
+    public float introDuration = 3f; 
+
+    // --- NEW: Reference to your temporary camera light ---
+    [Header("Lighting")]
+    public Light introFillLight; 
+    // ---------------------------------------------------
+
+    private Vector3 normalOffset;    
+    private Quaternion normalRotation;
+    
+    private float timer = 0f;
 
     void Start()
     {
-        // Om du inte ställt in offset manuellt, räkna ut det baserat på startpositionen
         if (target != null)
         {
-            offset = transform.position - target.position;
+            normalOffset = transform.position - target.position;
+            normalRotation = transform.rotation;
+
+            transform.position = target.position + frontOffset;
+            transform.rotation = Quaternion.Euler(frontRotation);
         }
     }
 
@@ -20,16 +37,31 @@ public class CameraFollow : MonoBehaviour
     {
         if (target == null) return;
 
-        // Vi vill följa spelarens X (sida) och Z (framåt), 
-        // men vi  vill ha en fast höjd eller följa Y mjukt.
-        
-        // Räkna ut var kameran borde vara
-        Vector3 desiredPosition = target.position + offset;
+        timer += Time.deltaTime;
 
-        
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-        
-        // Applicera positionen
-        transform.position = smoothedPosition;
+        Vector3 desiredPosition;
+        Quaternion desiredRotation;
+
+        if (timer < introDuration)
+        {
+            // We are in the intro
+            desiredPosition = target.position + frontOffset;
+            desiredRotation = Quaternion.Euler(frontRotation);
+            
+            // --- NEW: Keep the light ON ---
+            if (introFillLight != null) introFillLight.enabled = true;
+        }
+        else
+        {
+            // We are in normal gameplay
+            desiredPosition = target.position + normalOffset;
+            desiredRotation = normalRotation;
+            
+            // --- NEW: Turn the light OFF ---
+            if (introFillLight != null) introFillLight.enabled = false;
+        }
+
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, smoothSpeed * Time.deltaTime);
     }
 }
