@@ -22,16 +22,22 @@ public class LevelManager : MonoBehaviour
     public BuildingType[] availableBuildings; 
     public float buildingOffset = 25f; 
 
-    // --- NEW: Dedicated array for your background prefabs ---
     [Header("Background Buildings")]
     public BuildingType[] backgroundBuildings; 
     public float backgroundOffset = 45f; 
-    // --------------------------------------------------------
 
     [Header("Ground/Sidewalk Configuration")]
     public GameObject concretePrefab; 
     public float concreteWidth = 40f; 
     public float roadOffset = 10f;     
+
+    [Header("PowerUp Configuration")]
+    // --- UPDATED: Now it's a list! You can add Double Jump AND Smash here! ---
+    public GameObject[] powerUpPrefabs; 
+    [Range(0f, 1f)] public float powerUpSpawnChance = 0.3f; 
+    public float hoverHeight = 1.0f; 
+    public float[] lanePositions = { 0f, 10f, 20f }; 
+    // -------------------------------------------------------------------------
 
     private float spawnZ = 0f; 
     private float safeZone = 45f; 
@@ -64,12 +70,44 @@ public class LevelManager : MonoBehaviour
 
         if (spawnItems)
         {
-            SpawnSide(go, -buildingOffset); // Left
-            SpawnSide(go, buildingOffset);  // Right
+            SpawnSide(go, -buildingOffset); 
+            SpawnSide(go, buildingOffset);  
+            
+            SpawnPowerUp(go);
         }
 
         activeTiles.Add(go);
         spawnZ += tileLength;
+    }
+
+    void SpawnPowerUp(GameObject roadTile)
+    {
+        // --- UPDATED: Check if the list has any powerups in it ---
+        if (powerUpPrefabs == null || powerUpPrefabs.Length == 0) return;
+        
+        // Roll the dice to see if a powerup spawns on this tile
+        if (Random.value > powerUpSpawnChance) return; 
+        
+        if (lanePositions == null || lanePositions.Length == 0) return;
+
+        // --- NEW: Pick a random power-up from your list! ---
+        GameObject selectedPowerUp = powerUpPrefabs[Random.Range(0, powerUpPrefabs.Length)];
+
+        int randomLaneIndex = Random.Range(0, lanePositions.Length);
+        float exactX = lanePositions[randomLaneIndex];
+        float randomZ = Random.Range(0, tileLength);
+
+        Vector3 localStartPos = new Vector3(exactX, 20f, randomZ);
+        Vector3 worldStartPos = roadTile.transform.TransformPoint(localStartPos);
+
+        if (Physics.Raycast(worldStartPos, Vector3.down, out RaycastHit hit, 50f))
+        {
+            Vector3 finalSpawnPosition = hit.point + (Vector3.up * hoverHeight);
+            
+            // Spawn the randomly selected power-up
+            GameObject powerUp = Instantiate(selectedPowerUp, finalSpawnPosition, Quaternion.identity);
+            powerUp.transform.SetParent(roadTile.transform, true); 
+        }
     }
 
     void SpawnSide(GameObject roadTile, float xPos)
@@ -77,7 +115,6 @@ public class LevelManager : MonoBehaviour
         if (concretePrefab != null)
         {
             GameObject ground = Instantiate(concretePrefab, roadTile.transform);
-            
             float side = Mathf.Sign(xPos); 
             float roadEdge = roadOffset / 2f;
             float concreteX = (roadEdge + (concreteWidth / 2f)) * side;
@@ -87,23 +124,14 @@ public class LevelManager : MonoBehaviour
         }
 
         float baseRotation = (xPos > 0) ? -90f : 90f;
-        
-        // --- UPDATED: Pass the correct array to SpawnLane ---
-        
-        // 1. Spawn foreground buildings
         SpawnLane(roadTile, xPos, baseRotation, availableBuildings);
 
-        // 2. Spawn background buildings further out
         float bgXPos = (xPos > 0) ? backgroundOffset : -backgroundOffset;
         SpawnLane(roadTile, bgXPos, baseRotation, backgroundBuildings);
-        
-        // ----------------------------------------------------
     }
     
-    // --- UPDATED: Added a 'buildingPool' parameter ---
     void SpawnLane(GameObject roadTile, float xPos, float baseRotation, BuildingType[] buildingPool)
     {
-        // Safety check: skip if the array is empty so Unity doesn't throw errors
         if (buildingPool == null || buildingPool.Length == 0) return;
 
         float currentZ = 0f;
@@ -111,7 +139,6 @@ public class LevelManager : MonoBehaviour
         {
             List<BuildingType> validBuildings = new List<BuildingType>();
             
-            // Look through the specific array we passed in
             foreach (var b in buildingPool) 
             {
                 if (currentZ + b.width <= tileLength) validBuildings.Add(b);
@@ -120,6 +147,9 @@ public class LevelManager : MonoBehaviour
             if (validBuildings.Count == 0) break;
 
             BuildingType selected = validBuildings[Random.Range(0, validBuildings.Count)];
+            
+            if (selected.width <= 0.1f) break; 
+
             float zPosOnTile = currentZ + (selected.width / 2f);
 
             GameObject building = Instantiate(selected.prefab, roadTile.transform);

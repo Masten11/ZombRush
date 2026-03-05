@@ -21,13 +21,29 @@ public class PlayerMovement : MonoBehaviour
     [Header("Air Slam & Gravity")]
     public float slamDownForce = 40f;   
     public float maxDownSpeed = 30f;    
-    public float fallMultiplier = 1.8f; // NEW: Pulls you down fast when you fall off ledges
-    public float groundCheckBuffer = 0.4f; // NEW: Prevents ramp "quicksand" stutter
+    public float fallMultiplier = 1.8f; 
+    public float groundCheckBuffer = 0.4f; 
 
-    public float apexThreshold = 2f; // NEW: Gravity kicks in when upward speed drops below this
+    public float apexThreshold = 2f; 
+    
     [Header("UI & Timer")]
     public Text timerText;
     private float startTime;
+
+    // --- NEW: Power-Up Variables ---
+    [Header("Double jump power uo")]
+    public float doubleJumpDuration = 10f; // How many seconds the power-up lasts
+    private bool canDoubleJump = false;    // Is the powerup currently active?
+    private bool hasDoubleJumped = false;  // Has the player already used their second jump in the air?
+
+
+    // --- Juggernaut Power-Up ---
+    [Header("Smash Power-Up")]
+    public float smashDuration = 8f;     // How long you are invincible
+    public float smashForce = 40f;       // How hard the obstacles get hit
+    private bool isInvincible = false;   // Are we in Smash Mode?
+    // --------------------------------
+    // -------------------------------
 
     private float speed;
 
@@ -36,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator anim;
 
     private bool isGrounded;
-    private bool jumped = false; // Tracks if we intentionally jumped
+    private bool jumped = false; 
     private bool isRolling = false;
     private int currentLane = 1;
 
@@ -60,7 +76,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // 1. UPDATE GROUND STATE FIRST
         UpdateGroundedState();
 
         if (timerText != null)
@@ -71,22 +86,39 @@ public class PlayerMovement : MonoBehaviour
             timerText.text = minutes + ":" + seconds;
         }
 
-        // Progressiv fartökning
         speed = Mathf.MoveTowards(speed, maxSpeed, accelerationRate * Time.deltaTime);
 
-        // Hopp (Space / UpArrow / W)
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) && isGrounded && !isRolling)
+        // --- UPDATED: Jump Logic to handle Double Jumps ---
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            
-            jumped = true; // We pressed jump!
-            isSlammingDown = false;
+            // NORMAL JUMP (From the ground)
+            if (isGrounded && !isRolling)
+            {
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                
+                jumped = true; 
+                isSlammingDown = false;
+                hasDoubleJumped = false; // Reset the double jump token
 
-            anim.SetTrigger("Jump");
+                anim.SetTrigger("Jump");
+            }
+            // DOUBLE JUMP (From the air)
+            else if (!isGrounded && canDoubleJump && !hasDoubleJumped && !isRolling)
+            {
+                // Reset the Y velocity to 0 first so the second jump is always exactly as high as the first
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                
+                hasDoubleJumped = true; // Mark that we used the air jump
+                isSlammingDown = false;
+                
+                // Play the jump animation again in the air!
+                anim.Play("Jump", -1, 0f); 
+            }
         }
+        // ---------------------------------------------------
 
-        // Roll (DownArrow / S) 
         if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
         {
             if (isGrounded && !isRolling)
@@ -101,7 +133,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        // Filbyte (RightArrow/D, LeftArrow/A)
         if ((Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) && currentLane < 2) currentLane++;
         if ((Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) && currentLane > 0) currentLane--;
 
@@ -115,16 +146,12 @@ public class PlayerMovement : MonoBehaviour
     {
         bool wasGrounded = isGrounded;
         
-        // 1. Start the laser at the exact center of the Capsule, no matter where the pivot is.
         Vector3 rayStart = transform.position + originalCenter;
-        
-        // 2. Length is half the capsule height + your buffer to reach into the floor
         float rayLength = (originalHeight / 2f) + groundCheckBuffer;
         
         RaycastHit hit;
         bool hitGround = false;
 
-        // 3. Shoot the laser and ONLY count it if it hits your specific tags
         if (Physics.Raycast(rayStart, Vector3.down, out hit, rayLength))
         {
             if (hit.collider.CompareTag("Ground") || hit.collider.CompareTag("Plank") || hit.collider.CompareTag("Obstacle"))
@@ -135,12 +162,12 @@ public class PlayerMovement : MonoBehaviour
 
         isGrounded = hitGround;
 
-        // Update Animator and States if our grounding changed
         if (isGrounded && !wasGrounded)
         {
             anim.SetBool("isGrounded", true);
-            jumped = false; // Reset intentional jump when we land
-            isSlammingDown = false; // Reset the air slam!
+            jumped = false; 
+            isSlammingDown = false; 
+            hasDoubleJumped = false; // --- NEW: Reset double jump when we hit the floor ---
         }
         else if (!isGrounded && wasGrounded)
         {
@@ -164,42 +191,55 @@ public class PlayerMovement : MonoBehaviour
         isRolling = false;
     }
 
- void FixedUpdate()
+    void FixedUpdate()
     {
         float y = rb.linearVelocity.y;
 
-        // User's Air Slam limit
         if (isSlammingDown && y < -maxDownSpeed)
         {
             y = -maxDownSpeed;
         }
 
-        // IF WE RAN OFF A LEDGE OR RAMP (No intentional jump)
         if (!isGrounded && !jumped)
         {
-            // 1. KILL THE UPWARD LAUNCH
-            // If the ramp threw us up into the air, instantly flatten our trajectory.
             if (y > 0)
             {
                 y = 0f; 
             }
-
-            // 2. THE SMOOTH FALL
-            // Apply the extra gravity to pull us down. 
             y += Physics.gravity.y * fallMultiplier * Time.fixedDeltaTime;
         }
 
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, y, speed);
     }
+    
     void OnCollisionEnter(Collision col)
     {
-        // Grounding is handled completely by UpdateGroundedState now. 
-        // This is ONLY for hitting a wall and Game Over.
         if (col.gameObject.CompareTag("Obstacle"))
         {
-            if (col.contacts[0].normal.y <= 0.5f)
+            // --- SCENARIO 1: We have the Super Power! SMASH IT! ---
+            if (isInvincible)
             {
-                // We hit the side or the front. Game over.
+                // 1. Get the Rigidbody of the obstacle, or add one instantly if it doesn't have one
+                Rigidbody obsRb = col.gameObject.GetComponent<Rigidbody>();
+                if (obsRb == null) 
+                {
+                    obsRb = col.gameObject.AddComponent<Rigidbody>();
+                }
+
+                // 2. Turn on physics
+                obsRb.isKinematic = false;
+
+                // 3. Blast it away and slightly upwards so it flies over our head!
+                Vector3 blastDirection = transform.forward + Vector3.up; 
+                obsRb.AddForce(blastDirection * smashForce, ForceMode.Impulse);
+                obsRb.AddTorque(new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), Random.Range(-5f, 5f)) * smashForce, ForceMode.Impulse);
+
+                // 4. Turn off the obstacle's collider so it doesn't bounce back and hit us
+                col.collider.enabled = false; 
+            }
+            // --- SCENARIO 2: No Super Power. Game Over. ---
+            else if (col.contacts[0].normal.y <= 0.5f)
+            {
                 float t = Time.time - startTime;
 
                 if (LeaderboardManager.Instance != null)
@@ -209,6 +249,42 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
+    // --- NEW: Power-Up Activation Methods ---
+    public void ActivateDoubleJump()
+    {
+        // Stop any existing timer so grabbing two powerups back-to-back resets the clock
+        StopCoroutine("DoubleJumpTimer"); 
+        StartCoroutine("DoubleJumpTimer");
+    }
+
+    private IEnumerator DoubleJumpTimer()
+    {
+        canDoubleJump = true;
+        
+        // Wait for X seconds
+        yield return new WaitForSeconds(doubleJumpDuration);
+        
+        canDoubleJump = false;
+    }
+
+    // --- NEW: Activate the Smash Power! ---
+    public void ActivateSmashMode()
+    {
+        StopCoroutine("SmashTimer"); 
+        StartCoroutine("SmashTimer");
+    }
+
+    private IEnumerator SmashTimer()
+    {
+        isInvincible = true;
+        
+        // Wait for X seconds
+        yield return new WaitForSeconds(smashDuration);
+        
+        isInvincible = false;
+    }
+
 
     public bool IsGrounded => isGrounded;
     public float ForwardSpeed => rb != null ? rb.linearVelocity.z : 0f;
