@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
@@ -19,31 +18,26 @@ public class PlayerMovement : MonoBehaviour
     public float rollHeightMultiplier = 0.2f;
 
     [Header("Air Slam & Gravity")]
-    public float slamDownForce = 40f;   
-    public float maxDownSpeed = 30f;    
-    public float fallMultiplier = 1.8f; 
-    public float groundCheckBuffer = 0.4f; 
+    public float slamDownForce = 40f;
+    public float maxDownSpeed = 30f;
+    public float fallMultiplier = 1.8f;
+    public float groundCheckBuffer = 0.4f;
 
-    public float apexThreshold = 2f; 
-    
+    public float apexThreshold = 2f;
+
     [Header("UI & Timer")]
     public Text timerText;
     private float startTime;
 
-    // --- NEW: Power-Up Variables ---
-    [Header("Double jump power uo")]
-    public float doubleJumpDuration = 10f; // How many seconds the power-up lasts
-    private bool canDoubleJump = false;    // Is the powerup currently active?
-    private bool hasDoubleJumped = false;  // Has the player already used their second jump in the air?
+    [Header("Double jump power up")]
+    public float doubleJumpDuration = 10f;
+    private bool canDoubleJump = false;
+    private bool hasDoubleJumped = false;
 
-
-    // --- Juggernaut Power-Up ---
     [Header("Smash Power-Up")]
-    public float smashDuration = 8f;     // How long you are invincible
-    public float smashForce = 40f;       // How hard the obstacles get hit
-    private bool isInvincible = false;   // Are we in Smash Mode?
-    // --------------------------------
-    // -------------------------------
+    public float smashDuration = 8f;
+    public float smashForce = 40f;
+    private bool isInvincible = false;
 
     private float speed;
 
@@ -52,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator anim;
 
     private bool isGrounded;
-    private bool jumped = false; 
+    private bool jumped = false;
     private bool isRolling = false;
     private int currentLane = 1;
 
@@ -60,6 +54,12 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 originalCenter;
 
     private bool isSlammingDown = false;
+
+    private bool isDead = false;
+    private bool canDie = false;
+
+    private ZombieFollower zombieFollower;
+    private PlayerAudio playerAudio;
 
     void Start()
     {
@@ -72,52 +72,61 @@ public class PlayerMovement : MonoBehaviour
         originalCenter = playerCollider.center;
 
         speed = startSpeed;
+
+        playerAudio = GetComponent<PlayerAudio>();
+        zombieFollower = FindFirstObjectByType<ZombieFollower>();
+
+        StartCoroutine(EnableDeathAfterDelay());
+    }
+
+    private IEnumerator EnableDeathAfterDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        canDie = true;
     }
 
     void Update()
     {
+        if (isDead) return;
+
         UpdateGroundedState();
 
         if (timerText != null)
         {
             float t = Time.time - startTime;
             string minutes = ((int)t / 60).ToString("00");
-            string seconds = (t % 60).ToString("00");
+            string seconds = ((int)t % 60).ToString("00");
             timerText.text = minutes + ":" + seconds;
         }
 
         speed = Mathf.MoveTowards(speed, maxSpeed, accelerationRate * Time.deltaTime);
 
-        // --- UPDATED: Jump Logic to handle Double Jumps ---
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
         {
-            // NORMAL JUMP (From the ground)
             if (isGrounded && !isRolling)
             {
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                
-                jumped = true; 
-                isSlammingDown = false;
-                hasDoubleJumped = false; // Reset the double jump token
 
-                anim.SetTrigger("Jump");
+                jumped = true;
+                isSlammingDown = false;
+                hasDoubleJumped = false;
+
+                if (anim != null)
+                    anim.SetTrigger("Jump");
             }
-            // DOUBLE JUMP (From the air)
             else if (!isGrounded && canDoubleJump && !hasDoubleJumped && !isRolling)
             {
-                // Reset the Y velocity to 0 first so the second jump is always exactly as high as the first
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                
-                hasDoubleJumped = true; // Mark that we used the air jump
+
+                hasDoubleJumped = true;
                 isSlammingDown = false;
-                
-                // Play the jump animation again in the air!
-                anim.Play("Jump", -1, 0f); 
+
+                if (anim != null)
+                    anim.Play("Jump", -1, 0f);
             }
         }
-        // ---------------------------------------------------
 
         if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
         {
@@ -133,8 +142,11 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if ((Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) && currentLane < 2) currentLane++;
-        if ((Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) && currentLane > 0) currentLane--;
+        if ((Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) && currentLane < 2)
+            currentLane++;
+
+        if ((Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) && currentLane > 0)
+            currentLane--;
 
         float targetX = (currentLane - 1) * laneDistance;
         Vector3 newPos = transform.position;
@@ -145,10 +157,10 @@ public class PlayerMovement : MonoBehaviour
     private void UpdateGroundedState()
     {
         bool wasGrounded = isGrounded;
-        
+
         Vector3 rayStart = transform.position + originalCenter;
         float rayLength = (originalHeight / 2f) + groundCheckBuffer;
-        
+
         RaycastHit hit;
         bool hitGround = false;
 
@@ -164,21 +176,26 @@ public class PlayerMovement : MonoBehaviour
 
         if (isGrounded && !wasGrounded)
         {
-            anim.SetBool("isGrounded", true);
-            jumped = false; 
-            isSlammingDown = false; 
-            hasDoubleJumped = false; // --- NEW: Reset double jump when we hit the floor ---
+            if (anim != null)
+                anim.SetBool("isGrounded", true);
+
+            jumped = false;
+            isSlammingDown = false;
+            hasDoubleJumped = false;
         }
         else if (!isGrounded && wasGrounded)
         {
-            anim.SetBool("isGrounded", false);
+            if (anim != null)
+                anim.SetBool("isGrounded", false);
         }
     }
 
     IEnumerator PerformRoll()
     {
         isRolling = true;
-        anim.SetTrigger("Roll");
+
+        if (anim != null)
+            anim.SetTrigger("Roll");
 
         playerCollider.height = originalHeight * rollHeightMultiplier;
         playerCollider.center = new Vector3(originalCenter.x, originalCenter.y / 2f, originalCenter.z);
@@ -193,6 +210,12 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isDead)
+        {
+            rb.linearVelocity = Vector3.zero;
+            return;
+        }
+
         float y = rb.linearVelocity.y;
 
         if (isSlammingDown && y < -maxDownSpeed)
@@ -204,87 +227,99 @@ public class PlayerMovement : MonoBehaviour
         {
             if (y > 0)
             {
-                y = 0f; 
+                y = 0f;
             }
+
             y += Physics.gravity.y * fallMultiplier * Time.fixedDeltaTime;
         }
 
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, y, speed);
     }
-    
+
+    public void Die()
+    {
+        if (isDead) return;
+        isDead = true;
+
+        float t = Time.time - startTime;
+
+        if (LeaderboardManager.Instance != null)
+            LeaderboardManager.Instance.SubmitScore("Player", t);
+
+        if (playerAudio != null)
+            playerAudio.MarkDead();
+
+        speed = 0f;
+        isRolling = false;
+        isSlammingDown = false;
+        rb.linearVelocity = Vector3.zero;
+
+        if (anim != null)
+            anim.SetBool("isGrounded", true);
+
+        if (zombieFollower != null)
+            zombieFollower.StartKillSequence();
+        else if (playerAudio != null)
+            playerAudio.LoadGameOver();
+    }
+
     void OnCollisionEnter(Collision col)
     {
+        if (isDead || !canDie) return;
+
         if (col.gameObject.CompareTag("Obstacle"))
         {
-            // --- SCENARIO 1: We have the Super Power! SMASH IT! ---
             if (isInvincible)
             {
-                // 1. Get the Rigidbody of the obstacle, or add one instantly if it doesn't have one
                 Rigidbody obsRb = col.gameObject.GetComponent<Rigidbody>();
-                if (obsRb == null) 
+                if (obsRb == null)
                 {
                     obsRb = col.gameObject.AddComponent<Rigidbody>();
                 }
 
-                // 2. Turn on physics
                 obsRb.isKinematic = false;
 
-                // 3. Blast it away and slightly upwards so it flies over our head!
-                Vector3 blastDirection = transform.forward + Vector3.up; 
+                Vector3 blastDirection = transform.forward + Vector3.up;
                 obsRb.AddForce(blastDirection * smashForce, ForceMode.Impulse);
-                obsRb.AddTorque(new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), Random.Range(-5f, 5f)) * smashForce, ForceMode.Impulse);
+                obsRb.AddTorque(
+                    new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), Random.Range(-5f, 5f)) * smashForce,
+                    ForceMode.Impulse
+                );
 
-                // 4. Turn off the obstacle's collider so it doesn't bounce back and hit us
-                col.collider.enabled = false; 
+                col.collider.enabled = false;
             }
-            // --- SCENARIO 2: No Super Power. Game Over. ---
-            else if (col.contacts[0].normal.y <= 0.5f)
+            else if (col.contactCount > 0 && col.contacts[0].normal.y <= 0.5f)
             {
-                float t = Time.time - startTime;
-
-                if (LeaderboardManager.Instance != null)
-                    LeaderboardManager.Instance.SubmitScore("Player", t);
-
-                GetComponent<PlayerAudio>()?.DieWithSounds();
+                Die();
             }
         }
     }
 
-    // --- NEW: Power-Up Activation Methods ---
     public void ActivateDoubleJump()
     {
-        // Stop any existing timer so grabbing two powerups back-to-back resets the clock
-        StopCoroutine("DoubleJumpTimer"); 
+        StopCoroutine("DoubleJumpTimer");
         StartCoroutine("DoubleJumpTimer");
     }
 
     private IEnumerator DoubleJumpTimer()
     {
         canDoubleJump = true;
-        
-        // Wait for X seconds
         yield return new WaitForSeconds(doubleJumpDuration);
-        
         canDoubleJump = false;
     }
 
-    // --- NEW: Activate the Smash Power! ---
     public void ActivateSmashMode()
     {
-        StopCoroutine("SmashTimer"); 
+        StopCoroutine("SmashTimer");
         StartCoroutine("SmashTimer");
     }
 
     private IEnumerator SmashTimer()
     {
         isInvincible = true;
-        
-        // Wait for X seconds
         yield return new WaitForSeconds(smashDuration);
-        
         isInvincible = false;
     }
-
 
     public bool IsGrounded => isGrounded;
     public float ForwardSpeed => rb != null ? rb.linearVelocity.z : 0f;
