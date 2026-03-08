@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
@@ -29,6 +30,10 @@ public class PlayerMovement : MonoBehaviour
     public Text timerText;
     private float startTime;
 
+    [Header("Power-Up UI")]
+    public Image doubleJumpBar; // The Blue Bar
+    public Image smashBar;      // The Green Bar
+
     [Header("Double jump power up")]
     public float doubleJumpDuration = 10f;
     private bool canDoubleJump = false;
@@ -37,7 +42,11 @@ public class PlayerMovement : MonoBehaviour
     [Header("Smash Power-Up")]
     public float smashDuration = 8f;
     public float smashForce = 40f;
+
+    public float smashSizeMultiplier = 1.5f; 
     private bool isInvincible = false;
+
+    private Vector3 originalScale;
 
     private float speed;
 
@@ -71,7 +80,12 @@ public class PlayerMovement : MonoBehaviour
         originalHeight = playerCollider.height;
         originalCenter = playerCollider.center;
 
+        originalScale = transform.localScale;
+
         speed = startSpeed;
+
+        if (doubleJumpBar != null) doubleJumpBar.fillAmount = 0f;
+        if (smashBar != null) smashBar.fillAmount = 0f;
 
         playerAudio = GetComponent<PlayerAudio>();
         zombieFollower = FindFirstObjectByType<ZombieFollower>();
@@ -157,6 +171,10 @@ public class PlayerMovement : MonoBehaviour
     private void UpdateGroundedState()
     {
         bool wasGrounded = isGrounded;
+
+        // This math scales up when the player gets big so they can still jump
+        Vector3 currentCenter = originalCenter * transform.localScale.y;
+        float currentHeight = originalHeight * transform.localScale.y;
 
         Vector3 rayStart = transform.position + originalCenter;
         float rayLength = (originalHeight / 2f) + groundCheckBuffer;
@@ -304,8 +322,24 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator DoubleJumpTimer()
     {
         canDoubleJump = true;
-        yield return new WaitForSeconds(doubleJumpDuration);
+        float timeLeft = doubleJumpDuration;
+
+        // --- UPDATED: Smoothly animate the bar ---
+        while (timeLeft > 0)
+        {
+            timeLeft -= Time.deltaTime; // Subtract time passed this frame
+            
+            if (doubleJumpBar != null) 
+            {
+                // Fill Amount goes from 1 (full) to 0 (empty)
+                doubleJumpBar.fillAmount = timeLeft / doubleJumpDuration;
+            }
+            
+            yield return null; // Wait for the next frame
+        }
+
         canDoubleJump = false;
+        if (doubleJumpBar != null) doubleJumpBar.fillAmount = 0f;
     }
 
     public void ActivateSmashMode()
@@ -317,8 +351,25 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator SmashTimer()
     {
         isInvincible = true;
-        yield return new WaitForSeconds(smashDuration);
+        transform.localScale = originalScale * smashSizeMultiplier;
+        float timeLeft = smashDuration;
+
+        // --- UPDATED: Smoothly animate the bar ---
+        while (timeLeft > 0)
+        {
+            timeLeft -= Time.deltaTime;
+            
+            if (smashBar != null)
+            {
+                smashBar.fillAmount = timeLeft / smashDuration;
+            }
+            
+            yield return null;
+        }
+        
+        transform.localScale = originalScale;
         isInvincible = false;
+        if (smashBar != null) smashBar.fillAmount = 0f;
     }
 
     public bool IsGrounded => isGrounded;
