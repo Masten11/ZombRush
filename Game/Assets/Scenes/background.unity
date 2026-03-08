@@ -2206,7 +2206,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: maxSpeed
-      value: 80
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: smashBar
@@ -2242,11 +2242,11 @@ PrefabInstance:
       objectReference: {fileID: 824367988}
     - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: fallMultiplier
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: accelerationRate
-      value: 0.3
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 8913565324325806469, guid: a62146824ffa64979a40c84983ca8a35, type: 3}
       propertyPath: doubleJumpDuration
