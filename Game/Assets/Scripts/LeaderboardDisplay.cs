@@ -6,7 +6,7 @@ using TMPro;
 public class LeaderboardDisplay : MonoBehaviour
 {
     [Header("Top 5 Text UI")]
-    // We use an array so you can drag exactly 5 text elements into the Inspector
+    
 public TextMeshProUGUI[] topFiveTexts; 
 
     void Start()

@@ -8,7 +8,7 @@ public class LeaderboardEntry
 {
     public string playerName;
     public float timeSeconds;     // score: time survived
-    public string dateIso;        // optional
+    public string dateIso;        
 
     public LeaderboardEntry(string name, float timeSeconds)
     {

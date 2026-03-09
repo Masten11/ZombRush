@@ -1,23 +1,25 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; // Useful if you add a restart/menu button
+using UnityEngine.SceneManagement; 
 
+// Manages pausing, resuming, and restarting the game using Unity's TimeScale
 public class PauseManager : MonoBehaviour
 {
     [Header("UI References")]
-    public GameObject pauseMenuPanel;
-    public GameObject pauseButton; // Optional: to hide the pause button while paused
+    public GameObject pauseMenuPanel; // The large pause menu UI
+    public GameObject pauseButton;    // The small on-screen pause button (optional)
 
     private bool isPaused = false;
 
     void Start()
     {
-        // Safety net: Ensures the game doesn't stay frozen if you restart the scene while paused.
+        // Always ensure time is running normally when a scene first loads.
+        // If you restart while paused, the game will stay permanently frozen without this!
         Time.timeScale = 1f; 
     }
 
     void Update()
     {
-        // Optional: Allow the player to pause using the Escape key
+        // Allow the player to toggle the pause menu using the Escape key
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused) ResumeGame();
@@ -25,28 +27,36 @@ public class PauseManager : MonoBehaviour
         }
     }
 
+    // Called by the on-screen Pause Button or the Escape key
     public void PauseGame()
     {
         pauseMenuPanel.SetActive(true);
         if (pauseButton != null) pauseButton.SetActive(false);
         
-        Time.timeScale = 0f; // Freezes the game
+        // Time.timeScale = 0 freezes all physics, movement, and animations
+        Time.timeScale = 0f; 
         isPaused = true;
     }
 
+    // Called by the "Resume" button on the pause menu or the Escape key
     public void ResumeGame()
     {
         pauseMenuPanel.SetActive(false);
         if (pauseButton != null) pauseButton.SetActive(true);
         
-        Time.timeScale = 1f; // Resumes the game
+        // Return time to normal speed
+        Time.timeScale = 1f; 
         isPaused = false;
     }
 
-    // Optional helper for a "Main Menu" or "Restart" button
+    // Called by a "Restart" or "Try Again" UI button
     public void RestartGame()
     {
-        Time.timeScale = 1f; // ALWAYS reset time scale before loading a scene!
+        // Crucial: You must unfreeze time before loading a scene, 
+        // otherwise the new scene will load completely frozen!
+        Time.timeScale = 1f; 
+        
+        // Reloads the level you are currently playing
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

@@ -21,7 +21,7 @@ public class SmashablePlank : MonoBehaviour
             // Turn physics back on instantly!
             rb.isKinematic = false;
 
-            // Optional: Give it a nice push in the direction the player is running
+            // Give it a  push in the direction the player is running
             Vector3 pushDirection = col.contacts[0].point - transform.position;
             pushDirection = -pushDirection.normalized; // Push away from the impact point
             
