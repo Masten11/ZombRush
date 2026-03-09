@@ -194,6 +194,18 @@ MonoBehaviour:
     width: 30
     rotationOffset: 90
   buildingOffset: 20
+  backgroundBuildings: []
+  backgroundOffset: 45
+  concretePrefab: {fileID: 0}
+  concreteWidth: 40
+  roadOffset: 10
+  powerUpPrefabs: []
+  powerUpSpawnChance: 0.3
+  hoverHeight: 1
+  lanePositions:
+  - 0
+  - 10
+  - 20
 --- !u!4 &820865573 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8286084694346051136, guid: af12331b921044f7dbd2b8a20c32a0b0, type: 3}
